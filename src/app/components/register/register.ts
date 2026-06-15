@@ -18,11 +18,11 @@ import {
   styleUrl: './register.css',
 })
 export class RegisterComponent {
-  registerForm: FormGroup;
-  submittedData: any = null;
+  userForm: FormGroup;
+  resultData: any = null;
 
-  constructor(private fb: FormBuilder) {
-    this.registerForm = this.fb.group(
+  constructor(private formBuilder: FormBuilder) {
+    this.userForm = this.formBuilder.group(
       {
         fullName: ['', [Validators.required, Validators.minLength(5)]],
         email: [
@@ -37,91 +37,90 @@ export class RegisterComponent {
           '',
           [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)],
         ],
-        additionalMobiles: this.fb.array([]),
+        extraMobiles: this.formBuilder.array([]),
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
       },
-      { validators: this.passwordMatchValidator }
+      { validators: this.validatePasswordMatch }
     );
   }
 
-  passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
-    const password = group.get('password')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
-    if (password && confirmPassword && password !== confirmPassword) {
-      group.get('confirmPassword')?.setErrors({ passwordMismatch: true });
+  validatePasswordMatch(groupControl: AbstractControl): ValidationErrors | null {
+    const pwd = groupControl.get('password')?.value;
+    const confirmPwd = groupControl.get('confirmPassword')?.value;
+    if (pwd && confirmPwd && pwd !== confirmPwd) {
+      groupControl.get('confirmPassword')?.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
 
-    const errors = group.get('confirmPassword')?.errors;
-    if (errors) {
-      delete errors['passwordMismatch'];
-      if (Object.keys(errors).length === 0) {
-        group.get('confirmPassword')?.setErrors(null);
+    const errorList = groupControl.get('confirmPassword')?.errors;
+    if (errorList) {
+      delete errorList['passwordMismatch'];
+      if (Object.keys(errorList).length === 0) {
+        groupControl.get('confirmPassword')?.setErrors(null);
       }
     }
     return null;
   }
 
-  get additionalMobiles(): FormArray {
-    return this.registerForm.get('additionalMobiles') as FormArray;
+  get extraMobiles(): FormArray {
+    return this.userForm.get('extraMobiles') as FormArray;
   }
 
   addMobile(): void {
-    this.additionalMobiles.push(
-      this.fb.control('', [
+    this.extraMobiles.push(
+      this.formBuilder.control('', [
         Validators.required,
         Validators.pattern(/^01[0125][0-9]{8}$/),
       ])
     );
   }
 
-  removeMobile(index: number): void {
-    this.additionalMobiles.removeAt(index);
+  removeMobile(idx: number): void {
+    this.extraMobiles.removeAt(idx);
   }
 
   isFieldValid(fieldName: string): boolean {
-    const field = this.registerForm.get(fieldName);
-    return field ? field.valid && (field.dirty || field.touched) : false;
+    const ctrl = this.userForm.get(fieldName);
+    return ctrl ? ctrl.valid && (ctrl.dirty || ctrl.touched) : false;
   }
 
   isFieldInvalid(fieldName: string): boolean {
-    const field = this.registerForm.get(fieldName);
-    return field ? field.invalid && (field.dirty || field.touched) : false;
+    const ctrl = this.userForm.get(fieldName);
+    return ctrl ? ctrl.invalid && (ctrl.dirty || ctrl.touched) : false;
   }
 
-  
-  isMobileValid(index: number): boolean {
-    const control = this.additionalMobiles.at(index);
-    return control ? control.valid && (control.dirty || control.touched) : false;
+  isMobileValid(idx: number): boolean {
+    const mobileControl = this.extraMobiles.at(idx);
+    return mobileControl ? mobileControl.valid && (mobileControl.dirty || mobileControl.touched) : false;
   }
 
-  isMobileInvalid(index: number): boolean {
-    const control = this.additionalMobiles.at(index);
-    return control
-      ? control.invalid && (control.dirty || control.touched)
+  isMobileInvalid(idx: number): boolean {
+    const mobileControl = this.extraMobiles.at(idx);
+    return mobileControl
+      ? mobileControl.invalid && (mobileControl.dirty || mobileControl.touched)
       : false;
   }
 
   resetForm(): void {
-    this.registerForm.reset();
-    this.additionalMobiles.clear();
-    this.submittedData = null;
+    this.userForm.reset();
+    this.extraMobiles.clear();
+    this.resultData = null;
   }
 
   onSubmit(): void {
-    if (this.registerForm.valid) {
-      this.submittedData = {
-        fullName: this.registerForm.value.fullName,
-        email: this.registerForm.value.email,
-        mobile: this.registerForm.value.mobile,
-        additionalMobiles: this.registerForm.value.additionalMobiles,
-        password: this.registerForm.value.password,
+    if (this.userForm.valid) {
+      this.resultData = {
+        fullName: this.userForm.value.fullName,
+        email: this.userForm.value.email,
+        mobile: this.userForm.value.mobile,
+        extraMobiles: this.userForm.value.extraMobiles,
+        password: this.userForm.value.password,
       };
-      this.registerForm.reset();
-      this.additionalMobiles.clear();
+      this.userForm.reset();
+      this.extraMobiles.clear();
     } else {
-      this.registerForm.markAllAsTouched();
+      this.userForm.markAllAsTouched();
     }
   }
 }

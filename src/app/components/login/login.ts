@@ -10,24 +10,24 @@ import { FormsModule, NgForm } from '@angular/forms';
   styleUrl: './login.css',
 })
 export class LoginComponent {
-  @ViewChild('loginForm') loginForm!: NgForm;
+  @ViewChild('loginForm') authForm!: NgForm;
 
-  email: string = '';
-  password: string = '';
-  submittedData: any = null;
+  userEmail: string = '';
+  userPassword: string = '';
+  formData: any = null;
 
   resetForm(): void {
-    this.loginForm.resetForm();
-    this.submittedData = null;
+    this.authForm.resetForm();
+    this.formData = null;
   }
 
-  onSubmit(form: NgForm): void {
-    if (form.valid) {
-      this.submittedData = {
-        email: this.email,
-        password: this.password,
+  onSubmit(userForm: NgForm): void {
+    if (userForm.valid) {
+      this.formData = {
+        email: this.userEmail,
+        password: this.userPassword,
       };
-      form.resetForm();
+      userForm.resetForm();
     }
   }
 }

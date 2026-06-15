@@ -14,7 +14,7 @@
       </div>
 
       <!-- Form -->
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="px-8 pb-8 space-y-5">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="px-8 pb-8 space-y-5">
 
         <!-- Full Name -->
         <div>
@@ -33,9 +33,9 @@
             </p>
           }
           @if (isFieldInvalid('fullName')) {
-            @if (registerForm.get('fullName')?.errors?.['required']) {
+            @if (userForm.get('fullName')?.errors?.['required']) {
               <p class="mt-1 text-xs text-rose-400">Full name is required.</p>
-            } @else if (registerForm.get('fullName')?.errors?.['minlength']) {
+            } @else if (userForm.get('fullName')?.errors?.['minlength']) {
               <p class="mt-1 text-xs text-rose-400">Full name must be at least 5 characters.</p>
             }
           }
@@ -58,9 +58,9 @@
             </p>
           }
           @if (isFieldInvalid('email')) {
-            @if (registerForm.get('email')?.errors?.['required']) {
+            @if (userForm.get('email')?.errors?.['required']) {
               <p class="mt-1 text-xs text-rose-400">Email is required.</p>
-            } @else if (registerForm.get('email')?.errors?.['email'] || registerForm.get('email')?.errors?.['pattern']) {
+            } @else if (userForm.get('email')?.errors?.['email'] || userForm.get('email')?.errors?.['pattern']) {
               <p class="mt-1 text-xs text-rose-400">Please enter a valid email address.</p>
             }
           }
@@ -83,16 +83,16 @@
             </p>
           }
           @if (isFieldInvalid('mobile')) {
-            @if (registerForm.get('mobile')?.errors?.['required']) {
+            @if (userForm.get('mobile')?.errors?.['required']) {
               <p class="mt-1 text-xs text-rose-400">Mobile number is required.</p>
-            } @else if (registerForm.get('mobile')?.errors?.['pattern']) {
+            } @else if (userForm.get('mobile')?.errors?.['pattern']) {
               <p class="mt-1 text-xs text-rose-400">Enter a valid Egyptian mobile (e.g., 01012345678).</p>
             }
           }
         </div>
 
         <!-- Additional Mobiles (Dynamic FormArray) -->
-        @for (mobile of additionalMobiles.controls; track $index) {
+        @for (mobile of extraMobiles.controls; track $index) {
           <div class="flex items-start gap-2 animate-fade-in">
             <div class="flex-1">
               <label class="block text-sm font-medium text-slate-300 mb-1.5">Additional Mobile #{{ $index + 1 }}</label>
@@ -160,9 +160,9 @@
             </p>
           }
           @if (isFieldInvalid('password')) {
-            @if (registerForm.get('password')?.errors?.['required']) {
+            @if (userForm.get('password')?.errors?.['required']) {
               <p class="mt-1 text-xs text-rose-400">Password is required.</p>
-            } @else if (registerForm.get('password')?.errors?.['minlength']) {
+            } @else if (userForm.get('password')?.errors?.['minlength']) {
               <p class="mt-1 text-xs text-rose-400">Password must be at least 6 characters.</p>
             }
           }
@@ -185,9 +185,9 @@
             </p>
           }
           @if (isFieldInvalid('confirmPassword')) {
-            @if (registerForm.get('confirmPassword')?.errors?.['required']) {
+            @if (userForm.get('confirmPassword')?.errors?.['required']) {
               <p class="mt-1 text-xs text-rose-400">Please confirm your password.</p>
-            } @else if (registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
+            } @else if (userForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
               <p class="mt-1 text-xs text-rose-400">Passwords do not match.</p>
             }
           }
@@ -213,7 +213,7 @@
     </div>
 
     <!-- Success Card -->
-    @if (submittedData) {
+    @if (resultData) {
       <div class="mt-6 bg-emerald-500/10 backdrop-blur-xl rounded-2xl border border-emerald-500/20 p-6 animate-fade-in">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
@@ -226,17 +226,17 @@
         <div class="space-y-2 text-sm">
           <div class="flex justify-between py-2 border-b border-white/5">
             <span class="text-slate-400">Full Name</span>
-            <span class="text-white font-medium">{{ submittedData.fullName }}</span>
+            <span class="text-white font-medium">{{ resultData.fullName }}</span>
           </div>
           <div class="flex justify-between py-2 border-b border-white/5">
             <span class="text-slate-400">Email</span>
-            <span class="text-white font-medium">{{ submittedData.email }}</span>
+            <span class="text-white font-medium">{{ resultData.email }}</span>
           </div>
           <div class="flex justify-between py-2 border-b border-white/5">
             <span class="text-slate-400">Mobile</span>
-            <span class="text-white font-medium">{{ submittedData.mobile }}</span>
+            <span class="text-white font-medium">{{ resultData.mobile }}</span>
           </div>
-          @for (mob of submittedData.additionalMobiles; track $index) {
+          @for (mob of resultData.extraMobiles; track $index) {
             <div class="flex justify-between py-2 border-b border-white/5">
               <span class="text-slate-400">Mobile #{{ $index + 2 }}</span>
               <span class="text-white font-medium">{{ mob }}</span>
@@ -244,7 +244,7 @@
           }
           <div class="flex justify-between py-2">
             <span class="text-slate-400">Password</span>
-            <span class="text-white font-medium">{{ submittedData.password }}</span>
+            <span class="text-white font-medium">{{ resultData.password }}</span>
           </div>
         </div>
       </div>
